@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Button, TouchableWithoutFeedback, Keyboard, Ale
 import Card from '../components/Card';
 import Colors from '../constants/Color';
 import Input from '../components/Input';
+import NumberContainer from '../components/NumberContainer';
+import MainButton from '../components/MainButton';
 
 const StartGameScreen = props => {
     const [enteredValue, setEnteredValue] = useState('');
@@ -22,9 +24,9 @@ const StartGameScreen = props => {
         const chosenNumber = parseInt(enteredValue);
         if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
             Alert.alert(
-                'Invalid number!', 
-                'Number has to be number between 1 and 99.', 
-                [{text: 'Okay', style: 'destructive', onPress: resetInputHandler}]
+                'Invalid number!',
+                'Number has to be number between 1 and 99.',
+                [{ text: 'Okay', style: 'destructive', onPress: resetInputHandler }]
             );
             return;
         }
@@ -32,13 +34,25 @@ const StartGameScreen = props => {
         setConfirmed(true);
         setSelectedNumber(chosenNumber);
         setEnteredValue('');
+        Keyboard.dismiss();
     }
 
     let confirmedOutput;
 
     if (confirmed) {
         confirmedOutput = (
-            <Text>Choosen Number: {selectedNumber}</Text>
+            <Card style={styles.summaryContainer}>
+                <Text>You selected</Text>
+                <NumberContainer>
+                    {selectedNumber}
+                </NumberContainer>
+                {/* <Button
+                    title={'Start Game'}
+                    color={Colors.primary}
+                    onPress={() => props.onStartGame(selectedNumber)}
+                /> */}
+                <MainButton onClick={() => props.onStartGame(selectedNumber)}>START GAME</MainButton>
+            </Card>
         );
     }
 
@@ -100,6 +114,10 @@ const styles = StyleSheet.create({
     input: {
         width: 50,
         textAlign: 'center'
+    },
+    summaryContainer: {
+        marginTop: 20,
+        alignItems: 'center'
     }
 });
 
