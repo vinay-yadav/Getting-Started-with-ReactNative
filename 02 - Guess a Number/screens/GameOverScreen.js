@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button, Image } from 'react-native';
+import { View, Text, StyleSheet, Button, Image, Dimensions } from 'react-native';
 import MainButton from '../components/MainButton';
 import Colors from '../constants/Color';
 
@@ -14,11 +14,11 @@ const GameOverScreen = props => (
                 resizeMode='cover'
             />
         </View>
-        <Text>
+        <Text style={{ marginBottom: 10 }}>
             Your phone needed
-            <Text style={{color: Colors.primary, fontWeight: 'bold'}}> {props.rounds} </Text> 
+            <Text style={{ color: Colors.primary, fontWeight: 'bold' }}> {props.rounds} </Text>
             rounds to guess the number
-            <Text style={{color: Colors.primary, fontWeight: 'bold'}}> {props.userNumber} </Text>
+            <Text style={{ color: Colors.primary, fontWeight: 'bold' }}> {props.userNumber} </Text>
         </Text>
         {/* <Button title="New Game" onPress={props.newGame} /> */}
         <MainButton onClick={props.newGame}>NEW GAME</MainButton>
@@ -36,13 +36,17 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     imageContainer: {
-        borderRadius: 150,
+        borderRadius: Dimensions.get('window').width * 0.7 / 2,
+        // borderRadius: 150,
         borderWidth: 3,
         borderColor: 'black',
-        width: 300,
-        height: 300,
+        width: Dimensions.get('window').width * 0.7,
+        height: Dimensions.get('window').width * 0.7,
+        // width: 300,
+        // height: 300,
         overflow: 'hidden',
-        marginVertical: 30
+        // marginVertical: 30
+        marginVertical: Dimensions.get('window').height / 30
     }
 });
 
