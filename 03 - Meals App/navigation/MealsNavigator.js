@@ -58,6 +58,22 @@ const FavNavigator = createStackNavigator(
     }
 );
 
+// Temporary
+
+const FilterNav = createStackNavigator({
+    Filter: FilterScreen
+}, {
+    // navigationOptions: {
+    //     drawerLabel: 'Filters!!!'
+    // },
+    defaultNavigationOptions: {
+        headerStyle: {
+            backgroundColor: Platform.OS === 'ios' ? 'white' : Colors.primary,
+        },
+        headerTintColor: Platform.OS === 'ios' ? Colors.primary : 'white',
+    }
+});
+
 
 const tabScreenConfig = {
     Meals: {
@@ -78,6 +94,17 @@ const tabScreenConfig = {
                 return <Ionicons name='ios-star' size={25} color={tabInfo.tintColor} />
             },
             tabBarColor: Colors.accent
+        }
+    },
+    //  TEMP TAB
+    Filters: {
+        screen: FilterNav,
+        navigationOptions: {
+            tabBarLabel: 'Filters!!',
+            tabBarIcon: tabInfo => {
+                return <Ionicons name="ios-filter" size={25} color={tabInfo.tintColor} />
+            },
+            tabBarColor: Colors.primary
         }
     }
 };
@@ -108,46 +135,48 @@ const MealsFavTabNavigator =
 
 // MealsFavTabNavigator is now our root navigator
 
-const FilterNav = createStackNavigator({
-    Filter: FilterScreen
-}, {
-    // navigationOptions: {
-    //     drawerLabel: 'Filters!!!'
-    // },
-    defaultNavigationOptions: {
-        headerStyle: {
-            backgroundColor: Platform.OS === 'ios' ? 'white' : Colors.accent,
-        },
-        headerTintColor: Platform.OS === 'ios' ? Colors.primary : 'white'
-    }
-});
+// const FilterNav = createStackNavigator({
+//     Filter: FilterScreen
+// }, {
+//     // navigationOptions: {
+//     //     drawerLabel: 'Filters!!!'
+//     // },
+//     defaultNavigationOptions: {
+//         headerStyle: {
+//             backgroundColor: Platform.OS === 'ios' ? 'white' : Colors.accent,
+//         },
+//         headerTintColor: Platform.OS === 'ios' ? Colors.primary : 'white'
+//     }
+// });
 
-const MainNavigator = createDrawerNavigator(
-    {
-        MealsFav: {
-            screen: MealsFavTabNavigator,
-            navigationOptions: {
-                drawerLabel: 'Meals'
-            }
-        },
-        Filter: {
-            screen: FilterNav,
-            navigationOptions: {
-                drawerLabel: 'Filters'
-            }
-        }
-    },
-    {
-        contentOptions: {
-            activeTintColor: Colors.accent,
-            labelStyle: {
-                fontFamily: 'open-sans-bold',
-                marginTop: 100
-            }
-        }
-    }
-);
+// const MainNavigator = createDrawerNavigator(
+//     {
+//         MealsFav: {
+//             screen: MealsFavTabNavigator,
+//             navigationOptions: {
+//                 drawerLabel: 'Meals'
+//             }
+//         },
+//         Filter: {
+//             screen: FilterNav,
+//             navigationOptions: {
+//                 drawerLabel: 'Filters'
+//             }
+//         }
+//     },
+//     {
+//         contentOptions: {
+//             activeTintColor: Colors.accent,
+//             labelStyle: {
+//                 fontFamily: 'open-sans-bold',
+//                 marginTop: 100
+//             }
+//         }
+//     }
+// );
 
 // MainNavigator is now our root navigator
 
-export default createAppContainer(MainNavigator);
+// export default createAppContainer(MainNavigator);
+
+export default createAppContainer(MealsFavTabNavigator);

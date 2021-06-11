@@ -29,17 +29,17 @@ const CategoriesScreen = props => {
 CategoriesScreen.navigationOptions = navData => {
     return {
         headerTitle: 'Meal Categories',
-        headerLeft: () => {
-            return (
-                <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                    <Item
-                        title="menu"
-                        iconName="ios-menu"
-                        onPress={() => navData.navigation.toggleDrawer()}
-                    />
-                </HeaderButtons>
-            );
-        }
+        // headerLeft: () => {
+        //     return (
+        //         <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+        //             <Item
+        //                 title="menu"
+        //                 iconName="ios-menu"
+        //                 onPress={() => navData.navigation.toggleDrawer()}
+        //             />
+        //         </HeaderButtons>
+        //     );
+        // }
     }
 }
 

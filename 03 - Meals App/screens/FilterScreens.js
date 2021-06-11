@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Switch } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { useDispatch } from 'react-redux';
 import CustomHeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
+import { setFilters } from '../store/actions/meals';
 
 const FilterSwitch = props => {
     return (
@@ -24,6 +26,8 @@ const FilterScreen = props => {
     const [isVegan, setIsVegan] = useState(false);
     const [isVegetarian, setIsVegetarian] = useState(false);
 
+    const dispatch = useDispatch();
+
     const saveFilters = useCallback(
         () => {
             const appliedFilters = {
@@ -33,9 +37,9 @@ const FilterScreen = props => {
                 vegetarian: isVegetarian
             };
 
-            console.log(appliedFilters);
+            dispatch(setFilters(appliedFilters));
         },
-        [isGlutenFree, isLactoseFree, isVegetarian, isVegan]
+        [isGlutenFree, isLactoseFree, isVegetarian, isVegan, dispatch]
     )
 
     useEffect(() => {
@@ -72,17 +76,17 @@ const FilterScreen = props => {
 FilterScreen.navigationOptions = navData => {
     return {
         headerTitle: 'Filter Meals',
-        headerLeft: () => {
-            return (
-                <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                    <Item
-                        title="menu"
-                        iconName="ios-menu"
-                        onPress={() => navData.navigation.toggleDrawer()}
-                    />
-                </HeaderButtons>
-            );
-        },
+        // headerLeft: () => {
+        //     return (
+        //         <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+        //             <Item
+        //                 title="menu"
+        //                 iconName="ios-menu"
+        //                 onPress={() => navData.navigation.toggleDrawer()}
+        //             />
+        //         </HeaderButtons>
+        //     );
+        // },
         headerRight: () => {
             return (
                 <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
