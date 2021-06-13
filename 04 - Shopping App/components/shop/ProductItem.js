@@ -4,7 +4,7 @@ import Colors from '../../constants/Colors';
 
 const ProductItem = props => {
     return (
-        <TouchableNativeFeedback onPress={props.onViewDetails} useForeground>
+        <TouchableNativeFeedback onPress={props.onSelect} useForeground>
             <View style={styles.product}>
                 <Image style={styles.image} source={{ uri: props.image }} />
                 <View style={styles.textCotainer}>
@@ -12,8 +12,7 @@ const ProductItem = props => {
                     <Text style={styles.price}>${props.price.toFixed(2)}</Text>
                 </View>
                 <View style={styles.actions}>
-                    <Button color={Colors.primary} title='View Details' onPress={props.onViewDetails} />
-                    <Button color={Colors.primary} title='To Cart' onPress={props.onAddToCart} />
+                    {props.children}
                 </View>
             </View>
         </TouchableNativeFeedback>

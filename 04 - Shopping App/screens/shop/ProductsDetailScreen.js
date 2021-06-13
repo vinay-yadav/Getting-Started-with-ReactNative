@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
 import { addToCart } from '../../store/actions/cart';
 
+import HeaderButton from '../../components/UI/HeaderButton';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+
 const ProductDetail = props => {
     const productId = props.navigation.getParam('productId');
     const selectedProduct = useSelector(
@@ -25,7 +28,18 @@ const ProductDetail = props => {
 
 ProductDetail.navigationOptions = navData => {
     return {
-        headerTitle: navData.navigation.getParam('productTitle')
+        headerTitle: navData.navigation.getParam('productTitle'),
+        headerRight: () => {
+            return (
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                    <Item
+                        title='Cart'
+                        iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                        onPress={() => navData.navigation.navigate('Cart')}
+                    />
+                </HeaderButtons>
+            );
+        }
     }
 }
 
