@@ -1,10 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Button, TouchableNativeFeedback } from 'react-native';
-import Colors from '../../constants/Colors';
+import { View, Text, StyleSheet, Image, TouchableNativeFeedback } from 'react-native';
+import Card from '../UI/Card';
 
 const ProductItem = props => {
+    const TouchableEffect = TouchableNativeFeedback;
+
     return (
-        <TouchableNativeFeedback onPress={props.onSelect} useForeground>
+        // TouchableNativeFeedback not working with CustomComponent
+        <TouchableEffect onPress={props.onSelect} useForeground>
             <View style={styles.product}>
                 <Image style={styles.image} source={{ uri: props.image }} />
                 <View style={styles.textCotainer}>
@@ -15,22 +18,22 @@ const ProductItem = props => {
                     {props.children}
                 </View>
             </View>
-        </TouchableNativeFeedback>
+        </TouchableEffect>
     );
 }
 
 const styles = StyleSheet.create({
     product: {
+        height: 300,
+        margin: 20,
+        overflow: 'hidden',
         shadowColor: 'black',
         shadowOpacity: 0.26,
         shadowOffset: { width: 0, height: 2 },
         shadowRadius: 8,
         elevation: 10,
         borderRadius: 10,
-        backgroundColor: 'white',
-        height: 300,
-        margin: 20,
-        overflow: 'hidden'
+        backgroundColor: 'white'
     },
     image: {
         width: '100%',
