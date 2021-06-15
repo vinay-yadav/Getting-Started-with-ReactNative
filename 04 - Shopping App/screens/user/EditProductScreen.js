@@ -75,7 +75,6 @@ const EditProductScreen = props => {
     const submitHandler = useCallback(() => {
         // submit validation
         if (!formState.formIsValid) {
-            console.log(formState);
             Alert.alert(
                 'Wrong Input',
                 'Please check the errors in the form',
@@ -123,7 +122,7 @@ const EditProductScreen = props => {
         }, [dispatchFormState])
 
     return (
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding' keyboardVerticalOffset={100}>
+        <KeyboardAvoidingView /*style={{ flex: 1 }} behavior='padding' keyboardVerticalOffset={100}*/>
             <ScrollView>
                 <View style={styles.form}>
                     <Input
@@ -131,7 +130,7 @@ const EditProductScreen = props => {
                         label={'Title'}
                         value={editedProduct ? editedProduct.title : ''}
                         valid={!!editedProduct}
-                        onChange={inputChangeHandler}
+                        onInputChange={inputChangeHandler}
                         errorText={'Please enter a valid title'}
                         keyboardType='default'
                         autoCapitalize='sentences'
@@ -143,9 +142,9 @@ const EditProductScreen = props => {
                     <Input
                         id='image'
                         label={'Image URL'}
-                        value={editedProduct ? editedProduct.image : ''}
+                        value={editedProduct ? editedProduct.imageUrl : ''}
                         valid={!!editedProduct}
-                        onChange={inputChangeHandler}
+                        onInputChange={inputChangeHandler}
                         errorText={'Please enter a valid image url'}
                         keyboardType='default'
                         returnKeyType='next'
@@ -159,7 +158,7 @@ const EditProductScreen = props => {
                                 <Input
                                     id='price'
                                     label={'Price'}
-                                    onChange={inputChangeHandler}
+                                    onInputChange={inputChangeHandler}
                                     errorText={'Please enter a valid price'}
                                     keyboardType='decimal-pad'
                                     returnKeyType='next'
@@ -174,7 +173,7 @@ const EditProductScreen = props => {
                         label={'Description'}
                         value={editedProduct ? editedProduct.description : ''}
                         valid={!!editedProduct}
-                        onChange={inputChangeHandler}
+                        onInputChange={inputChangeHandler}
                         errorText={'Please enter a valid description'}
                         keyboardType='default'
                         autoCapitalize='sentences'

@@ -8,6 +8,7 @@ const inputReducer = (state, action) => {
                 ...state,
                 value: action.value,
                 isValid: action.isValid,
+                touched: true
             }
 
         case 'INPUT_BLUR':
@@ -54,20 +55,18 @@ const Input = props => {
         })
     }
 
-    const { onChange, id } = props;
+    const { onInputChange, id } = props;
 
     const lostFocusHandler = () => {
         dispatch({ type: 'INPUT_BLUR' });
     }
 
     useEffect(() => {
-        // if (inputState.touched) {
-        //     console.log('id', id);
-        //     onChange(id, inputState.value, inputState.isValid);
-        // }
-        console.log('id', id);
-        onChange(id, inputState.value, inputState.isValid);
-    }, [inputState, onChange, id]);
+        console.log('useEffect');
+        if (inputState.touched) {
+            onInputChange(id, inputState.value, inputState.isValid);
+        }
+    }, [inputState, onInputChange, id]);
 
     return (
         <View style={styles.formControl}>
