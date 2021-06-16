@@ -1,0 +1,1 @@
+export const fireBaseUrl = 'https://react-native-test-app-1b8f6-default-rtdb.firebaseio.com/';

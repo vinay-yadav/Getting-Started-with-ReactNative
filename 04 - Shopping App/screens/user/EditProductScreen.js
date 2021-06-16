@@ -1,10 +1,13 @@
-import React, { useCallback, useEffect, useReducer } from 'react';
-import { View, StyleSheet, ScrollView, Platform, Alert, KeyboardAvoidingView } from 'react-native';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import {
+    View, Text, StyleSheet, ScrollView, Platform, Alert, KeyboardAvoidingView, ActivityIndicator, Button
+} from 'react-native';
 import HeaderButton from '../../components/UI/HeaderButton';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct, updateProduct } from '../../store/actions/products';
 import Input from '../../components/UI/Input';
+import Colors from '../../constants/Colors';
 
 
 const formReducer = (state, action) => {
@@ -41,6 +44,9 @@ const formReducer = (state, action) => {
 
 
 const EditProductScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
+
     const prodId = props.navigation.getParam('productId');
     const editedProduct = useSelector(state => state.products.userProducts.find(
         product => product.id === prodId
@@ -72,7 +78,19 @@ const EditProductScreen = props => {
         formIsValid: editedProduct ? true : false
     });
 
-    const submitHandler = useCallback(() => {
+    useEffect(() => {
+        if (error) {
+            Alert.alert(
+                'An error occured',
+                error,
+                [
+                    {text: 'Okay'}
+                ]
+            )
+        }
+    }, [error])
+
+    const submitHandler = useCallback(async () => {
         // submit validation
         if (!formState.formIsValid) {
             Alert.alert(
@@ -83,23 +101,33 @@ const EditProductScreen = props => {
             return;
         }
 
-        if (editedProduct) {
-            dispatch(updateProduct(
-                prodId,
-                formState.inputValues.title,
-                formState.inputValues.description,
-                formState.inputValues.image
-            ));
-        } else {
-            dispatch(createProduct(
-                formState.inputValues.title,
-                formState.inputValues.description,
-                formState.inputValues.image,
-                +formState.inputValues.price
-            ));
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            if (editedProduct) {
+                await dispatch(updateProduct(
+                    prodId,
+                    formState.inputValues.title,
+                    formState.inputValues.description,
+                    formState.inputValues.image
+                ));
+            } else {
+                await dispatch(createProduct(
+                    formState.inputValues.title,
+                    formState.inputValues.description,
+                    formState.inputValues.image,
+                    +formState.inputValues.price
+                ));
+            }
+
+            props.navigation.goBack();
+        } catch (err) {
+            setError(err.message);
         }
 
-        props.navigation.goBack();
+        setIsLoading(false);
+
     }, [dispatch, prodId, formState]);
 
     useEffect(() => {
@@ -120,6 +148,23 @@ const EditProductScreen = props => {
                 input: inputIdentifier
             });
         }, [dispatchFormState])
+
+    if (isLoading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size='large' color={Colors.primary} />
+            </View>
+        );
+    }
+
+    // if (error) {
+    //     return (
+    //         <View style={styles.centered}>
+    //             <Text>{error}</Text>
+    //         </View>
+    //     );
+    // }
+
 
     return (
         <KeyboardAvoidingView /*style={{ flex: 1 }} behavior='padding' keyboardVerticalOffset={100}*/>
@@ -214,6 +259,11 @@ const styles = StyleSheet.create({
     form: {
         margin: 20
     },
+    centered: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 });
 
 export default EditProductScreen;

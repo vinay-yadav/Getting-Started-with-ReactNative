@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, FlatList, Platform, Button } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Platform, Button, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import ProductItem from '../../components/shop/ProductItem';
 import { addToCart } from '../../store/actions/cart';
@@ -7,11 +7,52 @@ import HeaderButton from '../../components/UI/HeaderButton';
 
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Colors from '../../constants/Colors';
+import { fetchProducts } from '../../store/actions/products';
 
 
 const ProductOverview = props => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [error, setError] = useState(false);
+
     const products = useSelector(state => state.products.availableProducts);
     const dispatch = useDispatch();
+
+
+    const loadProducts = useCallback(
+        async () => {
+            setError(null);
+            // setIsLoading(true);
+            setIsRefreshing(true);
+
+            try {
+                await dispatch(fetchProducts())
+            } catch (err) {
+                setError(err.message)
+            }
+
+            setIsRefreshing(false);
+            // setIsLoading(false);
+            
+        }, [dispatch, setIsLoading, setError]
+    );
+
+
+    useEffect(() => {
+        // for re-fetching of data
+        const willFocusSub = props.navigation.addListener('willFocus', loadProducts);
+
+        return () => {
+            willFocusSub.remove();
+        }
+    }, [])
+
+
+    useEffect(() => {
+        setIsLoading(true);
+        loadProducts().then(resp => setIsLoading(false))
+    }, [dispatch, loadProducts])
+
 
     const selectItemHandler = (id, title) => {
         props.navigation.navigate('ProductView', {
@@ -20,7 +61,31 @@ const ProductOverview = props => {
         })
     }
 
+    if (isLoading)
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size='large' color={Colors.primary} />
+            </View>
+        );
+
+    if (!isLoading && products.length === 0)
+        return (
+            <View style={styles.centered}>
+                <Text>Currently no products are available!!!</Text>
+            </View>
+        );
+
+    if (error)
+        return (
+            <View style={styles.centered}>
+                <Text>Can't connect to the server!!!</Text>
+                <Button title='Refresh' onPress={loadProducts} color={Colors.primary} />
+            </View>
+        );
+
     return <FlatList
+        onRefresh={loadProducts}
+        refreshing={isRefreshing}
         data={products}
         keyExtractor={item => item.id}
         renderItem={itemData => (
@@ -73,6 +138,12 @@ ProductOverview.navigationOptions = navData => {
     }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    centered: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+});
 
 export default ProductOverview;
