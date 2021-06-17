@@ -1,6 +1,24 @@
-export const SIGN_UP = 'SIGN_UP';
-export const LOGIN_IN = 'LOGIN_IN';
+import { AsyncStorage } from "react-native";
+
+export const AUTHENTICATE = 'AUTHENTICATE';
+export const LOGOUT = 'LOGOUT';
+
 const API_KEY = 'AIzaSyA0hovDDWMDhYxPRyugoyqwQeu9A-808fI';
+
+
+let timer;
+
+
+export const authenticate = (token, userId, expiryTime) => {
+    return dispatch => {
+        dispatch(setLogoutTimer(expiryTime));
+        dispatch({
+            type: AUTHENTICATE,
+            token,
+            userId
+        });
+    }
+}
 
 
 export const signUp = (email, password) => {
@@ -20,16 +38,17 @@ export const signUp = (email, password) => {
             }
         )
 
-        if (!response.ok)
-            throw new Error('Error in signUp');
+        if (!response.ok) {
+            const errResp = await response.json();
+            throw new Error(errResp.error.message);
+        }
 
         const respData = await response.json();
 
-        console.log(respData);
+        dispatch(authenticate(respData.idToken, respData.localId, parseInt(respData.expiresIn) * 1000));
 
-        dispatch({
-            type: SIGN_UP
-        })
+        const expirationDate = new Date(new Date().getTime() + parseInt(respData.expiresIn) * 1000);
+        saveDataToStorage(respData.idToken, respData.localId, expirationDate.toISOString());
     }
 }
 
@@ -51,15 +70,46 @@ export const logIn = (email, password) => {
             }
         )
 
-        if (!response.ok)
-            throw new Error('Error in signUp');
+        if (!response.ok) {
+            const errResp = await response.json();
+            throw new Error(errResp.error.message);
+        }
 
         const respData = await response.json();
 
-        console.log(respData);
+        dispatch(authenticate(respData.idToken, respData.localId, parseInt(respData.expiresIn) * 1000));
 
-        dispatch({
-            type: LOGIN_IN
-        })
+        const expirationDate = new Date(new Date().getTime() + parseInt(respData.expiresIn) * 1000);
+        saveDataToStorage(respData.idToken, respData.localId, expirationDate.toISOString());
     }
+}
+
+
+export const logout = () => {
+    AsyncStorage.removeItem('userData');
+    clearLogoutTimer();
+    return { type: LOGOUT }
+}
+
+const clearLogoutTimer = () => {
+    if (timer)
+        clearTimeout(timer);
+}
+
+
+const setLogoutTimer = expirationTime => {
+    return dispatch => {
+        timer = setTimeout(() => {
+            dispatch(logout());
+        }, expirationTime)
+    }
+}
+
+
+const saveDataToStorage = (token, userId, expiresIn) => {
+    AsyncStorage.setItem('userData', JSON.stringify({
+        token,
+        userId,
+        expiresIn
+    }))
 }

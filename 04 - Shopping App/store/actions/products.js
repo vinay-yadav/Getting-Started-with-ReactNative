@@ -8,12 +8,15 @@ export const SET_PRODUCTS = 'SET_PRODUCTS';
 
 
 export const fetchProducts = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
             const response = await fetch(fireBaseUrl + 'products.json');
 
-            if (!response.ok)
-                throw new Error('Something went wrong!!');
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error);
+            }
+                
 
             const respData = await response.json();
 
@@ -22,7 +25,7 @@ export const fetchProducts = () => {
             for (const key in respData) {
                 fetchedProducts.push(new Product(
                     key,
-                    'u1',
+                    respData[key].ownerId,
                     respData[key].title,
                     respData[key].imageUrl,
                     respData[key].description,
@@ -33,7 +36,8 @@ export const fetchProducts = () => {
 
             dispatch({
                 type: SET_PRODUCTS,
-                products: fetchedProducts
+                products: fetchedProducts,
+                userProducts: fetchedProducts.filter(prod => prod.ownerId === getState().auth.userId)
             })
         } catch (err) {
             // send to custom analytics server
@@ -44,8 +48,8 @@ export const fetchProducts = () => {
 
 
 export const deleteProduct = productId => {
-    return async dispatch => {
-        const response = await fetch(fireBaseUrl + `products/${productId}.json`, {
+    return async (dispatch, getState) => {
+        const response = await fetch(fireBaseUrl + `products/${productId}.json?auth=${getState().auth.token}`, {
             method: 'DELETE'
         });
 
@@ -60,8 +64,8 @@ export const deleteProduct = productId => {
 }
 
 export const createProduct = (title, description, imageUrl, price) => {
-    return async dispatch => {
-        const response = await fetch(fireBaseUrl + 'products.json', {
+    return async (dispatch, getState) => {
+        const response = await fetch(fireBaseUrl + `products.json?auth=${getState().auth.token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -70,7 +74,8 @@ export const createProduct = (title, description, imageUrl, price) => {
                 title,
                 description,
                 imageUrl,
-                price
+                price,
+                ownerId: getState().auth.userId
             })
         });
 
@@ -83,7 +88,8 @@ export const createProduct = (title, description, imageUrl, price) => {
                 title,
                 description,
                 imageUrl,
-                price
+                price,
+                ownerId: getState().auth.userId
             } // same as title: title...
         })
     }
@@ -91,9 +97,9 @@ export const createProduct = (title, description, imageUrl, price) => {
 
 
 export const updateProduct = (id, title, description, imageUrl) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
-            const response = await fetch(fireBaseUrl + `products/${id}.json`, {
+            const response = await fetch(fireBaseUrl + `products/${id}.json?auth=${getState().auth.token}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

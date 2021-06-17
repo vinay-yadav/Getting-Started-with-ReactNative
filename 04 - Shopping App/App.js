@@ -1,11 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import productReducer from './store/reducers/products';
 import cartReducer from './store/reducers/cart';
 import orderReducer from './store/reducers/orders';
-import ShopNavigator from './navigation/ShopNavigator';
+import authReducer from './store/reducers/auth';
+import NaviagationContainer from './navigation/NavigationContainer';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import ReduxThunk from 'redux-thunk';
@@ -13,7 +13,8 @@ import ReduxThunk from 'redux-thunk';
 const rootReducer = combineReducers({
     products: productReducer,
     cart: cartReducer,
-    orders: orderReducer
+    orders: orderReducer,
+    auth: authReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
@@ -40,8 +41,7 @@ export default function App() {
 
     return (
         <Provider store={store}>
-            <ShopNavigator />
-            {/* <StatusBar style="auto" /> */}
+            <NaviagationContainer />
         </Provider>
     );
 }

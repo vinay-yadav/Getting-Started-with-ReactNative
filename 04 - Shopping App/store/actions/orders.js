@@ -5,8 +5,8 @@ export const ADD_ORDER = 'ADD_ORDER';
 export const SET_ORDERS = 'SET_ORDERS';
 
 export const addOrder = (cartItems, totalAmount) => {
-    return async dispatch => {
-        const response = await fetch(fireBaseUrl + 'orders/u1.json', {
+    return async (dispatch, getState) => {
+        const response = await fetch(fireBaseUrl + `orders/${getState().auth.userId}.json?auth=${getState().auth.token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -34,9 +34,9 @@ export const addOrder = (cartItems, totalAmount) => {
 
 
 export const fetchOrders = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
-            const response = await fetch(fireBaseUrl + 'orders/u1.json');
+            const response = await fetch(fireBaseUrl + `orders/${getState().auth.userId}.json`);
 
             if (!response.ok)
                 throw new Error('Error in fetching orders!!!')

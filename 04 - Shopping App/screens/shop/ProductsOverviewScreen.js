@@ -33,7 +33,7 @@ const ProductOverview = props => {
 
             setIsRefreshing(false);
             // setIsLoading(false);
-            
+
         }, [dispatch, setIsLoading, setError]
     );
 
@@ -68,13 +68,6 @@ const ProductOverview = props => {
             </View>
         );
 
-    if (!isLoading && products.length === 0)
-        return (
-            <View style={styles.centered}>
-                <Text>Currently no products are available!!!</Text>
-            </View>
-        );
-
     if (error)
         return (
             <View style={styles.centered}>
@@ -82,6 +75,14 @@ const ProductOverview = props => {
                 <Button title='Refresh' onPress={loadProducts} color={Colors.primary} />
             </View>
         );
+
+    if (!isLoading && products.length === 0)
+        return (
+            <View style={styles.centered}>
+                <Text>Currently no products are available!!!</Text>
+            </View>
+        );
+
 
     return <FlatList
         onRefresh={loadProducts}
