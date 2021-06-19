@@ -5,18 +5,24 @@ import { useDispatch } from 'react-redux';
 import Colors from '../constants/Colors';
 import { addPlace } from '../store/places-action';
 import ImagePicker from '../components/ImagePicker';
+import LocationPicker from '../components/LocationPicker';
 
 const NewPlaceScreen = props => {
     const [title, setTitle] = useState('');
+    const [image, setImage] = useState();
 
     const titleChangeHandler = text => {
         setTitle(text);
     }
 
+    const imageTakenHandler = filePath => {
+        setImage(filePath);
+    }
+
     const dispatch = useDispatch();
 
     const savePlaceHandler = () => {
-        dispatch(addPlace(title));
+        dispatch(addPlace(title, image));
         props.navigation.goBack();
     }
 
@@ -29,7 +35,8 @@ const NewPlaceScreen = props => {
                     value={title}
                     onChangeText={titleChangeHandler}
                 />
-                <ImagePicker />
+                <ImagePicker onImageTaken={imageTakenHandler} />
+                <LocationPicker />
                 <Button title='Save Place' color={Colors.primary} onPress={savePlaceHandler} />
             </View>
         </ScrollView>

@@ -8,6 +8,15 @@ import ReduxThunk from 'redux-thunk';
 
 import placeReducer from './store/places-reducer';
 
+import { init } from './helpers/db';
+
+init()
+	.then(() => console.log('database initialised'))
+	.catch(error => {
+		console.log('database initialisation failed')
+		console.log(error)
+	});
+
 const rootReducer = combineReducers({
 	places: placeReducer
 })

@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import HeaderButton from '../components/HeaderButton';
 import PlaceItem from '../components/PlaceItem';
+import { loadPlaces } from '../store/places-action';
 
 const PlacesListScreen = props => {
     const places = useSelector(state => state.places.places)
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(loadPlaces());
+    }, [dispatch]);
 
     return (
         <FlatList
@@ -15,7 +22,7 @@ const PlacesListScreen = props => {
             keyExtractor={item => item.id}
             renderItem={itemData => (
                 <PlaceItem
-                    image={null}
+                    image={itemData.item.image}
                     title={itemData.item.title}
                     address={null}
                     onSelect={() => props.navigation.navigate(
