@@ -40,10 +40,10 @@ const ProductOverview = props => {
 
     useEffect(() => {
         // for re-fetching of data
-        const willFocusSub = props.navigation.addListener('willFocus', loadProducts);
+        const unsubscribe = props.navigation.addListener('focues', loadProducts);
 
         return () => {
-            willFocusSub.remove();
+            unsubscribe();
         }
     }, [])
 
@@ -111,7 +111,7 @@ const ProductOverview = props => {
     />
 }
 
-ProductOverview.navigationOptions = navData => {
+export const screenOptions = navData => {
     return {
         headerTitle: 'All Products',
         headerLeft: () => {

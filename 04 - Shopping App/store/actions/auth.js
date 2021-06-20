@@ -2,11 +2,19 @@ import { AsyncStorage } from "react-native";
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
+export const SET_DID_TRY_AL = 'SET_DID_TRY_AL';
 
 const API_KEY = 'AIzaSyA0hovDDWMDhYxPRyugoyqwQeu9A-808fI';
 
 
 let timer;
+
+
+export const didTryAutoAL = () => {
+    return {
+        type: SET_DID_TRY_AL
+    }
+}
 
 
 export const authenticate = (token, userId, expiryTime) => {

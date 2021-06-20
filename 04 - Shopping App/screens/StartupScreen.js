@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator, AsyncStorage } from 'react-native';
 import { useDispatch } from 'react-redux';
 import Colors from '../constants/Colors';
-import { authenticate } from '../store/actions/auth';
+import { authenticate, didTryAutoAL } from '../store/actions/auth';
 
 const StartupScreen = props => {
     const dispatch = useDispatch();
@@ -12,7 +12,8 @@ const StartupScreen = props => {
             const userData = await AsyncStorage.getItem('userData');
 
             if (!userData) {
-                props.navigation.navigate('Auth');
+                dispatch(didTryAutoAL());
+                // props.navigation.navigate('Auth');
                 return;
             }
 
@@ -23,14 +24,15 @@ const StartupScreen = props => {
             const expirationDate = new Date(expiresIn);
 
             if (expirationDate <= new Date() || !token || !userId) {
-                props.navigation.navigate('Auth');
+                dispatch(didTryAutoAL());
+                // props.navigation.navigate('Auth');
                 return;
             }
 
 
             const expiryTime = expirationDate.getTime() - new Date().getTime();
 
-            props.navigation.navigate('Shop');
+            // props.navigation.navigate('Shop');
             dispatch(authenticate(token, userId, expiryTime));
 
         }
